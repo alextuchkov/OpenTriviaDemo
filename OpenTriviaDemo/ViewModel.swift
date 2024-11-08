@@ -13,23 +13,19 @@ import Observation
 class ViewModel {
     
     
-    func getQuestions() async throws -> [Question]  {
+    func getQuestions(amount: String = "5", difficulty: String = "easy") async throws -> [Question]  {
         var questions: [Question] = []
         
-        guard let url = URL(string: "https://opentdb.com/api.php?amount=5&difficulty=easy&type=boolean") else {
+        guard let url = URL(string: "https://opentdb.com/api.php?amount=\(amount)&difficulty=\(difficulty)&type=boolean") else {
             print("Invalid url")
             return []
      
         }
         
         do {
-
             let (data, _) = try await URLSession.shared.data(from: url)
-            
-            let response = try JSONDecoder().decode(Response.self, from: data)
-            questions = response.results
-            print(questions)
-            print("-----")
+            let fetchedQuestions = try JSONDecoder().decode(Response.self, from: data)
+            questions = fetchedQuestions.results
             
             return questions
 
